@@ -2,28 +2,54 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Playback</title>
+  <title>Playback Controlado</title>
   <style>
     body { margin:0; background:black; color:white; font-family:Arial; text-align:center; }
     iframe { width:100%; height:90vh; border:none; margin-top:10px; }
     input { width:70%; padding:10px; font-size:16px; }
     button { padding:10px; font-size:16px; margin-left: 5px; }
   </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database-compat.js"></script>
 </head>
 <body>
-  <h2>Escolher Vídeo</h2>
+  <h2>Controle de Playback</h2>
   <input type="text" id="videoId" placeholder="Cole aqui o link ou ID do vídeo">
   <button onclick="carregarVideo()">Carregar</button>
   
   <iframe id="player" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
   <script>
+    // 🔹 Troque aqui pelas suas credenciais do Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyA2GZpkr31W6zMVH-j1TipyyqjBXYh6kqM",
+      authDomain: "playback-holyrics.firebaseapp.com",
+      databaseURL: "https://playback-holyrics-default-rtdb.firebaseio.com",
+      projectId: "playback-holyrics",
+      storageBucket: "playback-holyrics.firebasestorage.app",
+      messagingSenderId: "169429814562",
+      appId: "1:169429814562:web:78a5b6e914b1ec8be1297b"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
     function carregarVideo() {
       let url = document.getElementById("videoId").value;
       let id = url.includes("watch?v=") ? url.split("v=")[1].split("&")[0] : url;
-      document.getElementById("player").src = 
-        "https://www.youtube.com/embed/" + id + "?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0";
+      db.ref("videoAtual").set(id); // grava no banco
     }
+
+    // O PC escuta mudanças no Firebase
+    db.ref("videoAtual").on("value", snapshot => {
+      let id = snapshot.val();
+      if (id) {
+        document.getElementById("player").src =
+          "https://www.youtube.com/embed/" + id + "?autoplay=1&controls=0&modestbranding=1&rel=0";
+      }
+    });
   </script>
 </body>
 </html>
