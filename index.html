@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Playback</title>
+  <style>
+    body { margin:0; background:black; color:white; font-family:Arial; text-align:center; }
+    iframe { width:100%; height:90vh; border:none; margin-top:10px; }
+    input { width:70%; padding:10px; font-size:16px; }
+    button { padding:10px; font-size:16px; margin-left: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Escolher Vídeo</h2>
+  <input type="text" id="videoId" placeholder="Cole aqui o link ou ID do vídeo">
+  <button onclick="carregarVideo()">Carregar</button>
+  
+  <iframe id="player" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+  <script>
+    function carregarVideo() {
+      let url = document.getElementById("videoId").value;
+      let id = url.includes("watch?v=") ? url.split("v=")[1].split("&")[0] : url;
+      document.getElementById("player").src = 
+        "https://www.youtube.com/embed/" + id + "?autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0";
+    }
+  </script>
+</body>
+</html>
